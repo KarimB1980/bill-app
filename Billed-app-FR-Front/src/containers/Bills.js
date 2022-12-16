@@ -34,6 +34,7 @@ export default class {
       .list()
       .then(snapshot => {
         const bills = snapshot
+
           .map(doc => {
             try {
               return {
@@ -54,8 +55,9 @@ export default class {
           })
           console.log('length', bills.length);
 
-          // Inversion de l'ordre du tableau "bills" afin de le trier par ordre antéchronologique 
-          bills.reverse();
+          // Affichage des notes de frais par ordre antéchronologique 
+            console.log(bills.sort((a, b) => (b.date > a.date ? 1 : -1)));
+
 
         return bills
       })

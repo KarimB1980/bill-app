@@ -52,7 +52,11 @@ export default class {
               }
             }
           })
-          console.log('length', bills.length)
+          console.log('length', bills.length);
+
+          // Inversion de l'ordre du tableau "bills" afin de le trier par ordre antéchronologique 
+          bills.reverse();
+
         return bills
       })
     }

@@ -39,7 +39,7 @@ export default class {
             try {
               return {
                 ...doc,
-                date: formatDate(doc.date),
+                //date: formatDate(doc.date),
                 status: formatStatus(doc.status)
               }
             } catch(e) {
@@ -56,7 +56,7 @@ export default class {
           console.log('length', bills.length);
 
           // Affichage des notes de frais par ordre antéchronologique 
-          bills.sort((a, b) => (b.date > a.date ? 1 : -1));
+          console.log(bills.sort((a, b) => (b.date > a.date ? 1 : -1)));
 
 
         return bills

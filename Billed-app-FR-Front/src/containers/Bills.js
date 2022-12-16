@@ -56,7 +56,7 @@ export default class {
           console.log('length', bills.length);
 
           // Affichage des notes de frais par ordre antéchronologique 
-            console.log(bills.sort((a, b) => (b.date > a.date ? 1 : -1)));
+          bills.sort((a, b) => (b.date > a.date ? 1 : -1));
 
 
         return bills

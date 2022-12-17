@@ -33,19 +33,21 @@ export default class {
       .bills()
       .list()
       .then(snapshot => {
+        // Affichage des notes de frais par ordre antéchronologique
+        snapshot.sort((a, b) => (a.date < b.date ? 1 : -1));
+        //console.log(snapshot);
         const bills = snapshot
-
           .map(doc => {
             try {
               return {
                 ...doc,
-                //date: formatDate(doc.date),
+                date: formatDate(doc.date),
                 status: formatStatus(doc.status)
               }
             } catch(e) {
               // if for some reason, corrupted data was introduced, we manage here failing formatDate function
               // log the error and return unformatted date in that case
-              console.log(e,'for',doc)
+              //console.log(e,'for',doc)
               return {
                 ...doc,
                 date: doc.date,
@@ -53,11 +55,7 @@ export default class {
               }
             }
           })
-          console.log('length', bills.length);
-
-          // Affichage des notes de frais par ordre antéchronologique 
-          console.log(bills.sort((a, b) => (b.date > a.date ? 1 : -1)));
-
+          //console.log('length', bills.length);
 
         return bills
       })

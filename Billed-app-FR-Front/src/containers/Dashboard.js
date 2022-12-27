@@ -112,11 +112,12 @@ export default class {
     $('#btn-refuse-bill').click((e) => this.handleRefuseSubmit(e, bill))
   }*/
 
-
+// Modifications pour l'affichage du détail de la facture au premier clic sur une carte, et l'affichage du logo au deuxième clic sur une carte
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id 
     if (this.counter % 2 === 0) {
+      // Affichage du détail de la facture au premier clic sur une carte
       if (affichage === 0) {
         bills.forEach(b => {
           $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
@@ -127,6 +128,7 @@ export default class {
           return affichage = 1;
         })
       } else 
+      // Affichage du logo au deuxième clic sur une carte
       if (affichage === 1) {
         bills.forEach(b => {
           $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })

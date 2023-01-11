@@ -143,7 +143,7 @@ describe('Given I am connected as an Admin', () => {
       expect(handleShowTickets1).toHaveBeenCalled()
       expect(screen.getByTestId(`open-bill47qAXb6fIm2zOKkLzMro`)).toBeTruthy()
       const iconEdit = screen.getByTestId('open-bill47qAXb6fIm2zOKkLzMro')
-      userEvent.click(iconEdit)
+      //userEvent.click(iconEdit)
       userEvent.click(iconEdit)
       const bigBilledIcon = screen.queryByTestId("big-billed-icon")
       expect(bigBilledIcon).toBeTruthy()

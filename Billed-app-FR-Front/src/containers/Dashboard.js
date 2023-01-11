@@ -176,7 +176,7 @@ export default class {
       $(`#status-bills-container${this.index}`)
         .html(cards(filteredBills(bills, getStatus(this.index))))
 
-      // Affichage de la la liste des factures sélectionnées
+      // Affichage de la liste des factures sélectionnées
       if (this.index === 1) {
         $(`#arrow-icon2`).css({ transform: 'rotate(90deg)'})
         $(`#status-bills-container2`)

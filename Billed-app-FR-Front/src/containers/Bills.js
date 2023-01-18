@@ -34,29 +34,15 @@ export default class {
       .list()
       .then(snapshot => {
         // Affichage des notes de frais par ordre antéchronologique
-        snapshot.sort((a, b) => (a.date < b.date ? 1 : -1));
-        //console.log(snapshot);
+        snapshot.sort((a, b) => (new Date(a.date) < new Date(b.date) ? 1 : -1));
         const bills = snapshot
           .map(doc => {
-            try {
-              return {
-                ...doc,
-                date: formatDate(doc.date),
-                status: formatStatus(doc.status)
-              }
-            } catch(e) {
-              // if for some reason, corrupted data was introduced, we manage here failing formatDate function
-              // log the error and return unformatted date in that case
-              //console.log(e,'for',doc)
-              return {
-                ...doc,
-                date: doc.date,
-                status: formatStatus(doc.status)
-              }
+            return {
+              ...doc,
+              date: formatDate(doc.date),
+              status: formatStatus(doc.status)
             }
           })
-          //console.log('length', bills.length);
-
         return bills
       })
     }

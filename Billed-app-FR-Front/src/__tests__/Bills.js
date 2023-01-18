@@ -2,16 +2,14 @@
  * @jest-environment jsdom
  */
 
-import {getAllByTestId, screen, waitFor} from "@testing-library/dom"
+import {screen, waitFor, fireEvent} from "@testing-library/dom"
+import Bills from "../containers/Bills.js";
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
-import { ROUTES_PATH} from "../constants/routes.js";
+import {ROUTES, ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
-
-import router from "../app/Router.js";
-import userEvent from '@testing-library/user-event'
-import mockStore from "../__mocks__/store"
 import BaseDeDonnees from "../__mocks__/BaseDeDonnees.js";
+import router from "../app/Router.js";
 
 
 describe("Given I am connected as an employee", () => {
@@ -26,12 +24,14 @@ describe("Given I am connected as an employee", () => {
       document.body.append(root)
       router()
       window.onNavigate(ROUTES_PATH.Bills)
+
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
       //to-do write expect expression
-      //expect(windowIcon.style.background = "#7bb1f7").toEqual(windowIcon.style.background = "#7bb1f7")
-      expect(windowIcon.className = "active-icon").toEqual(windowIcon.className = "active-icon")
+      expect(windowIcon).toBeTruthy();
+      expect(windowIcon.classList.contains('active-icon')).toBeTruthy();
     })
+
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills }, {formatDate: false})
       const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
@@ -40,11 +40,7 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted)
     })
 
-    test("Then la facture devrait apparaitre à l'écran", async () => {
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee'
-      }))
+    test("Then the bill should appear on the screen", async () => {
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
@@ -60,7 +56,70 @@ describe("Given I am connected as an employee", () => {
         expect(document.getElementById("modaleFile").style.display = "block").toBeTruthy()
       });
     })
+
+
+    describe('When I click on the icon eye', () => {
+      test('A modal should open', () => {
+        const html = BillsUI({
+          data: bills
+        });
+        document.body.innerHTML = html;
+        const firestore = null;
+        const allBills = new Bills({
+          document,
+          onNavigate,
+          firestore,
+          localStorage: window.localStorage,
+        });
+
+        $.fn.modal = jest.fn();
+        const eye = screen.getAllByTestId('icon-eye')[0];
+        const handleClickIconEye = jest.fn(() =>
+          allBills.handleClickIconEye(eye)
+        );
+        eye.addEventListener('click', handleClickIconEye);
+        fireEvent.click(eye);
+
+        // La fonction handleClickIconEye doit être appelée
+        expect(handleClickIconEye).toHaveBeenCalled();
+        const modale = document.getElementById('modaleFile');
+        // La facture doit apparaitre
+        expect(modale).toBeTruthy();
+      });
+    });
   })
+
+
+  describe('Given I am connected as Employee and I am on Bills page', () => {
+    describe('When I click on the New Bill button', () => {
+      test('Then, it should render NewBill page', () => {
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({
+            pathname
+          });
+        };
+        const html = BillsUI({
+          data: []
+        });
+        document.body.innerHTML = html;
+        const firestore = null;
+        const allBills = new Bills({
+          document,
+          onNavigate,
+          firestore,
+          localStorage: window.localStorage,
+        });
+        const handleClickNewBill = jest.fn(allBills.handleClickNewBill);
+        const billBtn = screen.getByTestId('btn-new-bill');
+
+        billBtn.addEventListener('click', handleClickNewBill);
+        fireEvent.click(billBtn);
+        // L'écran devrait afficher "Envoyer une note de frais"
+        expect(screen.getAllByText('Envoyer une note de frais')).toBeTruthy();
+      });
+    });
+  });
+//---------------------------------------------------------------------------------------------------------------------------//
 })
 
 
@@ -69,11 +128,7 @@ describe("Given I am a user connected as Employee", () => {
   describe("Quand je suis dans Bills UI", () => {
     test("Extraction des factures depuis mock API GET dans BaseDeDonnees.js", async () => {
       const getFactures = jest.spyOn(BaseDeDonnees, "get");
-
-      // Get bills and the new bill
       const bills = await BaseDeDonnees.get();
-
-      // getSpy must have been called once
       expect(getFactures).toHaveBeenCalledTimes(1);
       // Le nombre de factures doit être 4
       expect(bills.data.length).toBe(4);

@@ -119,51 +119,43 @@ describe("Given I am connected as an employee", () => {
       });
     });
   });
-//---------------------------------------------------------------------------------------------------------------------------//
 })
 
+//---------------------------------------------------------------------------------------------------------------------------//
 
 // test d'intégration GET Bills
-describe("Given I am a user connected as Employee", () => {
-  describe("Quand je suis dans Bills UI", () => {
-    test("Extraction des factures depuis mock API GET dans BaseDeDonnees.js", async () => {
-      const getFactures = jest.spyOn(BaseDeDonnees, "get");
-      const bills = await BaseDeDonnees.get();
-      expect(getFactures).toHaveBeenCalledTimes(1);
-      // Le nombre de factures doit être 4
-      expect(bills.data.length).toBe(4);
-    });
+describe("Given I am connected as an employee", () => {
+  test("Extraction of bills from mock GET in BaseDeDonnees.js", async () => {
+  //test("Extraction des factures depuis mock API GET dans BaseDeDonnees.js", () => {  
+    const getFactures = jest.spyOn(BaseDeDonnees, "get");
+    const bills = await BaseDeDonnees.get();
+    //const bills = BaseDeDonnees.get();
+    expect(getFactures).toHaveBeenCalledTimes(1);
+    // Le nombre de factures doit être 4
+    expect(bills.data.length).toBe(4);
+  });
 
-    test("Extraction des factures depuis mock API GET dans BaseDeDonnees.js échec avec message d'erreur 404", async () => {
-      BaseDeDonnees.get.mockImplementationOnce(() =>
-        Promise.reject(new Error("Erreur 404"))
-      );
+  test("Extraction of bills from mock GET in BaseDeDonnees.js failure with error messager 404 Not Found", () => {  
+    BaseDeDonnees.get.mockImplementationOnce(() =>
+      Promise.reject(new Error("Erreur 404"))
+    );
+    // Création du code erreur 404
+    const html = BillsUI({error: "Erreur 404"});
+    document.body.innerHTML = html;
+    const message = screen.getByText(/Erreur 404/);
+    // Test de l'erreur 404
+    expect(message).toBeTruthy();
+  });
 
-      // Création du code erreur 404
-      const html = BillsUI({
-        error: "Erreur 404"
-      });
-      document.body.innerHTML = html;
-
-      const message = await screen.getByText(/Erreur 404/);
-      // Test de l'erreur 404
-      expect(message).toBeTruthy();
-    });
-
-    test("Extraction des factures depuis mock API GET dans BaseDeDonnees.js échec avec message d'erreur 500", async () => {
-      BaseDeDonnees.get.mockImplementationOnce(() =>
-        Promise.reject(new Error("Erreur 500"))
-      );
-
-      // Erreur 500
-      const html = BillsUI({
-        error: "Erreur 500"
-      });
-      document.body.innerHTML = html;
-
-      const message = await screen.getByText(/Erreur 500/);
-      // Test de l'erreur message 400
-      expect(message).toBeTruthy();
-    });
+  test("Extraction of bills from mock GET in BaseDeDonnees.js failure with error messager 500 Internal Server Error", () => {
+    BaseDeDonnees.get.mockImplementationOnce(() =>
+      Promise.reject(new Error("Erreur 500"))
+    );
+    // Création du code erreur 500
+    const html = BillsUI({error: "Erreur 500"});
+    document.body.innerHTML = html;
+    const message = screen.getByText(/Erreur 500/);
+    // Test de l'erreur message 400
+    expect(message).toBeTruthy();
   });
 });

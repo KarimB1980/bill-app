@@ -87,59 +87,33 @@ export default class {
     if (typeof $('#modaleFileAdmin1').modal === 'function') $('#modaleFileAdmin1').modal('show')
   }
 
-  /*handleEditTicket(e, bill, bills) {
-    if (this.counter === undefined || this.id !== bill.id) this.counter = 0
-    if (this.id === undefined || this.id !== bill.id) this.id = bill.id 
-    if (this.counter % 2 === 0) {
-      bills.forEach(b => {
-        $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
-      })
-      $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
-      $('.dashboard-right-container div').html(DashboardFormUI(bill))
-      $('.vertical-navbar').css({ height: '150vh' })
-      this.counter ++
-
-    } else {
-      $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
-      $('.dashboard-right-container div').html(`
-        <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
-      `)
-      $('.vertical-navbar').css({ height: '120vh' })
-      this.counter ++
-    }
-    $('#icon-eye-d').click(this.handleClickIconEye)
-    $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
-    $('#btn-refuse-bill').click((e) => this.handleRefuseSubmit(e, bill))
-  }*/
 
 // Modifications pour l'affichage du détail de la facture au premier clic sur une carte, et l'affichage du logo au deuxième clic sur une carte
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id 
-    if (this.counter % 2 === 0) {
-      // Affichage du détail de la facture au premier clic sur une carte
-      if (affichage === 0) {
-        bills.forEach(b => {
-          $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
-          $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
-          $('.dashboard-right-container div').html(DashboardFormUI(bill))
-          $('.vertical-navbar').css({ height: '150vh' })
-          this.counter ++
-          return affichage = 1;
-        })
-      } else 
-      // Affichage du logo au deuxième clic sur une carte
-      if (affichage === 1) {
-        bills.forEach(b => {
-          $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
-          $('.dashboard-right-container div').html(`
-            <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
-          `)
-          $('.vertical-navbar').css({ height: '120vh' })
-          this.counter ++
-          return affichage = 0;
-        })
-      }
+    // Affichage du détail de la facture au premier clic sur une carte
+    if (affichage === 0) {
+      bills.forEach(b => {
+        $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
+        $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
+        $('.dashboard-right-container div').html(DashboardFormUI(bill))
+        $('.vertical-navbar').css({ height: '150vh' })
+        this.counter ++
+        return affichage = 1;
+      })
+    } else 
+    // Affichage du logo au deuxième clic sur une carte
+    if (affichage === 1) {
+      bills.forEach(b => {
+        $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
+        $('.dashboard-right-container div').html(`
+          <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
+        `)
+        $('.vertical-navbar').css({ height: '120vh' })
+        this.counter ++
+        return affichage = 0;
+      })
     }
     $('#icon-eye-d').click(this.handleClickIconEye)
     $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))

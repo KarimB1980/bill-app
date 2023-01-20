@@ -76,7 +76,7 @@ describe("Given I am connected as an employee", () => {
     })
   })
 
-  describe("Quand je suis sur NewBill Page et que je clique sur 'Envoyer'" , () => {
+  describe("When I am on NewBill Page and I click on 'Envoyer'" , () => {
     test("Then a date should have been selected.", () => {
       document.querySelector('#btn-send-bill').click()
       const date = screen.getByTestId('datepicker')
@@ -130,6 +130,7 @@ describe("Given I am connected as an employee", () => {
         envoyer.addEventListener("submit", handleSubmit);
         userEvent.click(envoyer)
         expect(newBill.amount === "").not.toBeTruthy()
+        
         // Contrôle que la date est renseignée
         expect(newBill.date === "jj/mm/aaaa").not.toBeTruthy()
 
@@ -170,6 +171,8 @@ describe("Given I am connected as an employee", () => {
       expect(screen.getByTestId('file').value).toEqual("")
     });
   });
+
+  //---------------------------------------------------------------------------------------------------------------------------//
 
   // Test d'intégration POST NewBill
   describe('When bill form is submited', () => {

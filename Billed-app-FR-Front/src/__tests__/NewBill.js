@@ -32,7 +32,7 @@ describe("Given I am connected as an employee", () => {
     })
   })
 
-  describe('When I submit the form with an image (jpg, jpeg, png)', () => {
+  describe('When I submit the form with an image', () => {
     test('Then it should create a new bill', () => {
       const firestore = null;
       const html = NewBillUI();
@@ -54,22 +54,17 @@ describe("Given I am connected as an employee", () => {
     });
   });
 
-
   describe("When I am on NewBill Page", () => {
     test("Then the placeholder of the name of the expense should be 'Vol Paris Londres'", () => {
       const nomDepense = screen.getByTestId('expense-name')
       expect(nomDepense.style.placeholder="Vol Paris Londres").toEqual(nomDepense.style.placeholder="Vol Paris Londres")
     })
-  })
 
-  describe("When I am on NewBill Page", () => {
     test("Then a click on the button 'nouvelle facture' should bring up the form for entering the new bill", () => {
       const nouvelleFacture = screen.getByTestId('form-new-bill')
       expect(nouvelleFacture.style.display="block").toEqual(nouvelleFacture.style.display="block")
     })
-  })
 
-  describe("When I am on NewBill Page", () => {
     test("Then the select file should have an extension .jpg ou .jpeg ou .png", () => {
       const fichier = screen.getByTestId('file')
       expect(fichier.accept=".jpg, .jpeg, .png").toBeTruthy()
@@ -83,7 +78,6 @@ describe("Given I am connected as an employee", () => {
       expect(date.value === "jj/mm/aaaa").not.toBeTruthy()
     })
   })
-
 
   const newBill = [{
     "id": "47qAXb6fIm2zOKkLzMro",
@@ -101,49 +95,46 @@ describe("Given I am connected as an employee", () => {
     "pct": 20,
   }]
 
+  describe('When I click on send button', () => {
+    test(('Then, I should be sent to bills page'), () => {
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      document.body.innerHTML = NewBillUI({ newBill })
+      const newbill = new NewBill({ document, onNavigate, localStorage })
+      const handleClick = jest.fn(newbill.handleClick)
+      const handleChangeFile = jest.fn(newbill.handleChangeFile)
+      const envoyer = document.querySelector("#btn-send-bill")
+      const changer = screen.getByTestId("file")
+      const handleSubmit = jest.fn((e) => e.preventDefault());
 
-  describe('Given I am connected as an employee', () => {
-    describe('When I click on send button', () => {
-      test(('Then, I should be sent to bills page'), () => {
-        const onNavigate = (pathname) => {
-          document.body.innerHTML = ROUTES({ pathname })
-        }
-        document.body.innerHTML = NewBillUI({ newBill })
-        const newbill = new NewBill({ document, onNavigate, localStorage })
-        const handleClick = jest.fn(newbill.handleClick)
-        const handleChangeFile = jest.fn(newbill.handleChangeFile)
-        const envoyer = document.querySelector("#btn-send-bill")
-        const changer = screen.getByTestId("file")
-        const handleSubmit = jest.fn((e) => e.preventDefault());
+      // Contrôle que le fichier du justificatif est présent après un clic sur le bouton "Envoyer"
+      changer.addEventListener("click", handleChangeFile);
+      userEvent.click(envoyer)
+      expect(newBill.files).not.toEqual(newBill.files == "")
 
-        // Contrôle que le fichier du justificatif est présent après un clic sur le bouton "Envoyer"
-        changer.addEventListener("click", handleChangeFile);
-        userEvent.click(envoyer)
-        expect(newBill.files).not.toEqual(newBill.files == "")
+      // Contrôle que la fonction handleClick est appelée
+      envoyer.addEventListener('click', handleClick)
+      userEvent.click(envoyer)
+      expect(handleClick).toHaveBeenCalled()
 
-        // Contrôle que la fonction handleClick est appelée
-        envoyer.addEventListener('click', handleClick)
-        userEvent.click(envoyer)
-        expect(handleClick).toHaveBeenCalled()
+      // Contrôle que le prix est renseigné
+      envoyer.addEventListener("submit", handleSubmit);
+      userEvent.click(envoyer)
+      expect(newBill.amount === "").not.toBeTruthy()
+      
+      // Contrôle que la date est renseignée
+      expect(newBill.date === "jj/mm/aaaa").not.toBeTruthy()
 
-        // Contrôle que le prix est renseigné
-        envoyer.addEventListener("submit", handleSubmit);
-        userEvent.click(envoyer)
-        expect(newBill.amount === "").not.toBeTruthy()
-        
-        // Contrôle que la date est renseignée
-        expect(newBill.date === "jj/mm/aaaa").not.toBeTruthy()
+      // Recherche de l'extension du fichier sélectionné
+      let regexExtensionFichier = /(?:\.([^.]+))?$/;
+      let fichier = newBill.fileName;
+      let extensionFichier = regexExtensionFichier.exec(fichier);
+      // Contrôle que l'extension du fichier est png ou jpeg ou jpg 
+      expect(extensionFichier === "png" || extensionFichier === "jpeg" || extensionFichier === "jpg").toEqual(extensionFichier === "png" || extensionFichier === "jpeg" || extensionFichier === "jpg")
 
-        // Recherche de l'extension du fichier sélectionné
-        let regexExtensionFichier = /(?:\.([^.]+))?$/;
-        let fichier = newBill.fileName;
-        let extensionFichier = regexExtensionFichier.exec(fichier);
-        // Contrôle que l'extension du fichier est png ou jpeg ou jpg 
-        expect(extensionFichier === "png" || extensionFichier === "jpeg" || extensionFichier === "jpg").toEqual(extensionFichier === "png" || extensionFichier === "jpeg" || extensionFichier === "jpg")
-
-        // Contrôle que la page des notes de frais s'affiche après un clic sur "Envoyer"
-        expect(screen.getByText('Mes notes de frais')).toBeTruthy()
-      })
+      // Contrôle que la page des notes de frais s'affiche après un clic sur "Envoyer"
+      expect(screen.getByText('Mes notes de frais')).toBeTruthy()
     })
   })
 
@@ -177,7 +168,7 @@ describe("Given I am connected as an employee", () => {
   // Test d'intégration POST NewBill
   describe('When bill form is submited', () => {
     describe('When a new bill is create', () => {
-      test('Add bill to mock API POST', async () => {
+      test('Add bill to mock POST', async () => {
         const message = jest.spyOn(BaseDeDonnees, 'post');
 
         // Initialisation de la nouvelle facture

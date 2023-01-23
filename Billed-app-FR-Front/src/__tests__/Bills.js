@@ -57,7 +57,6 @@ describe("Given I am connected as an employee", () => {
       });
     })
 
-
     describe('When I click on the icon eye', () => {
       test('A modal should open', () => {
         const html = BillsUI({
@@ -87,10 +86,7 @@ describe("Given I am connected as an employee", () => {
         expect(modale).toBeTruthy();
       });
     });
-  })
 
-
-  describe('Given I am connected as Employee and I am on Bills page', () => {
     describe('When I click on the New Bill button', () => {
       test('Then, it should render NewBill page', () => {
         const onNavigate = (pathname) => {
@@ -119,14 +115,11 @@ describe("Given I am connected as an employee", () => {
       });
     });
   });
-})
 
-//---------------------------------------------------------------------------------------------------------------------------//
+  //---------------------------------------------------------------------------------------------------------------------------//
 
-// test d'intégration GET Bills
-describe("Given I am connected as an employee", () => {
+  // test d'intégration GET Bills
   test("Extraction of bills from mock GET in BaseDeDonnees.js", async () => {
-  //test("Extraction des factures depuis mock API GET dans BaseDeDonnees.js", () => {  
     const getFactures = jest.spyOn(BaseDeDonnees, "get");
     const bills = await BaseDeDonnees.get();
     //const bills = BaseDeDonnees.get();
